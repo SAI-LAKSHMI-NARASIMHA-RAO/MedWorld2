@@ -4,7 +4,8 @@ const orderModel=require("./order.model")
 const userSchema = mongoose.Schema({
     email:{
         type:String,
-        required:true
+        required:true,
+        unique:[true,"Email already exists"]
     },
     password:{
         type:String,
@@ -18,20 +19,22 @@ const userSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    active:{
-        type:Boolean,
-        required:true
-    },
     role:{
         type:String,
-        required:true
+        // required:true
     },
+    /*active:{
+        type:Boolean,
+        //required:true
+    },*/
+    
     cart:{
-        type:cartModel, 
-        required:true
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'cart'
+        // required:true
     },
     ordersList:{
-        type:[orderModel]
+        type:[orderModel.Schema]
     }
 });
 const userModel = mongoose.model("user", userSchema);
