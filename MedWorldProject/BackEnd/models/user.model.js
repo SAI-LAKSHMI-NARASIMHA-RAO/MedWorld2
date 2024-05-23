@@ -35,7 +35,7 @@ const userSchema = mongoose.Schema({
     },
     ordersList:{
         type:[orderModel.Schema],
-        default:[{}]
+        default:[],
     }
 });
 const userModel = mongoose.model("user", userSchema);

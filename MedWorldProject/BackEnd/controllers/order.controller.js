@@ -17,9 +17,11 @@ exports.saveProduct=async (req,res)=>{
     const userId = req.body.userId;
     try {
         const cartItems =await cartModel.find({userId:{$eq:userId} });
-        console.log(cartItems);
+        // console.log(cartItems);
         if(cartItems==[]) res.json({message:"Cart Items Not Found"})
         else{
+            // const userToAdd=userModel.findOne({userId:{$eq:userId}})
+            // if(!userToAdd.ordersList)userToAdd.ordersList=new Array({})
             cartItems.forEach(element => {
                 const {productName,quantity,price}=element;
                 const order=new orderModel({
@@ -31,10 +33,15 @@ exports.saveProduct=async (req,res)=>{
                     price:price,
                 })
                 order.save()
-                const userToAdd=userModel.findOne({userId:{$eq:userId}})
-                userToAdd.ordersList.push(order);
-                res.status(200).json(order);                   
-            });   
+                // console.log(userToAdd.ordersList);
+                userModel.findOneAndUpdate(
+                    { userId: userId }, 
+                    { $push: {ordersList: order} },
+                    {new :true});
+                // userModel.findOneAndUpdate({userId:userId},userToAdd);                
+            });
+            
+            res.status(200).json({message:"Added to Order.."});      
         }
     }
     catch (error) {

@@ -8,6 +8,7 @@ exports.saveUser=async (req, res)=>{
             password:password,
             username: username,
             mobileNumber: mobileNumber,
+            ordersList:[]
             
         });
         const user2=await loginModel.create({
