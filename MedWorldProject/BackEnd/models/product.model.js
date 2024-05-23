@@ -23,6 +23,10 @@ const productSchema = mongoose.Schema({
     quantity:{
         type:String,
         required:true
+    },
+    prescriptionRequired:{
+        type:Boolean,
+        required:true
     }
 });
 const productModel = mongoose.model("product", productSchema);

@@ -21,12 +21,12 @@ const userSchema = mongoose.Schema({
     },
     role:{
         type:String,
+        required:true
+    },
+    active:{
+        type:Boolean,
         // required:true
     },
-    /*active:{
-        type:Boolean,
-        //required:true
-    },*/
     
     cart:{
         type:mongoose.Schema.Types.ObjectId,
@@ -34,7 +34,8 @@ const userSchema = mongoose.Schema({
         // required:true
     },
     ordersList:{
-        type:[orderModel.Schema]
+        type:[orderModel.Schema],
+        default:[{}]
     }
 });
 const userModel = mongoose.model("user", userSchema);

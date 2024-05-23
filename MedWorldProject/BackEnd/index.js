@@ -21,7 +21,7 @@ app.use('/login',loginRoute)
 app.use('/home',homeRoute)
 app.use('/admin',adminRoute)
 app.use('/cart',cartRoute)
-app.use('/order',orderRoute)
+app.use('/orders',orderRoute)
 
 app.listen(port,()=>{
     console.log(`Server listening at port ${port}..`)

@@ -1,9 +1,11 @@
 const cartModel = require('../models/cart.model');
 const orderModel=require('../models/order.model')
+const productModel=require('../models/product.model');
+const userModel = require('../models/user.model');
 exports.getUserProducts=async (req,res)=>{
-    const id=req.params.id;
+    const id=req.body.userId;
     try{
-        const order=await orderModel.findOne({productId:{$eq:id}});
+        const order=await orderModel.find({userId:{$eq:id}});
         if(!order) res.json({"message":"Order not found"})
         else res.status(200).json(order)
     }catch(err){
@@ -12,30 +14,52 @@ exports.getUserProducts=async (req,res)=>{
 }
 
 exports.saveProduct=async (req,res)=>{
-    const userId = req.user.id;
+    const userId = req.body.userId;
     try {
-        const cartItems = await cartModel.find({ userId });
-        if(!cartItems) res.json({message:"Cart Items Not Found"})
-        else return res.status(200).json(cartItems);
+        const cartItems =await cartModel.find({userId:{$eq:userId} });
+        console.log(cartItems);
+        if(cartItems==[]) res.json({message:"Cart Items Not Found"})
+        else{
+            cartItems.forEach(element => {
+                const {productName,quantity,price}=element;
+                const order=new orderModel({
+                    userId:userId,
+                    productName:productName,
+                    quantity:quantity,
+                    totalPrice:(Number(quantity)*(Number(price))).toString(),
+                    status:"Order Placed",
+                    price:price,
+                })
+                order.save()
+                const userToAdd=userModel.findOne({userId:{$eq:userId}})
+                userToAdd.ordersList.push(order);
+                res.status(200).json(order);                   
+            });   
+        }
     }
     catch (error) {
-        // console.error("Error fetching cart items:", error);
-        return res.status(500).json({ message: "Internal server error" });
+        console.log(error)
+        res.status(500).json({ message: "Internal server error" });
     }
 }
 
 exports.placeOrder=async (req,res)=>{
     try{
-        const {orderId,userId,ProductName,quantity,totalPrice,Status,Price}=req.body;
-        const order=orderModel.create({
-            orderId:orderId,
+        const {userId,productId}=req.body;
+        console.log(userId)
+        const sprod=await productModel.findOne({productId:{$eq:productId}});
+        const {productName,price,quantity}=sprod;
+        console.log(sprod.productName)
+        const order=await orderModel.create({
             userId:userId,
-            ProductName:ProductName,
+            productName:productName,
             quantity:quantity,
-            totalPrice:totalPrice,
-            Status:Status,
-            Price:Price
+            price:price,
+            totalPrice:(Number(quantity)*Number(price)).toString(),
+            status:"Placed Order",
         })
+        const userToAdd=await userModel.findOne({userId:{$eq:userId}})
+        userToAdd.orderList.push(order);
         res.status(200).json(order);
     }
     catch(err){res.status(404).json({message:"Error in adding order!!!"})}

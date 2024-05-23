@@ -4,6 +4,6 @@ const controller=require('../controllers/cart.controller')
 
 cartroutes.get('/:id',controller.showCart)
 
-cartroutes.post('/delete',controller.deleteCartItem)
+cartroutes.post('/delete/:id',controller.deleteCartItem)
 
 module.exports=cartroutes
