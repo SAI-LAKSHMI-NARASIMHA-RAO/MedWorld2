@@ -1,9 +1,9 @@
 const express=require('express')
 const orderroutes=express.Router()
 const controller=require('../controllers/order.controller')
-
-orderroutes.post('/saveOrder',controller.saveProduct)
-orderroutes.post('/',controller.getUserProducts)
-orderroutes.post('/placeOrder',controller.placeOrder)
+const {authenticateUser}=require('../middlewares/user.middleware')
+orderroutes.post('/saveOrder',authenticateUser,controller.saveProduct)
+orderroutes.post('/',authenticateUser,controller.getUserProducts)
+orderroutes.post('/placeOrder',authenticateUser,controller.placeOrder)
 
 module.exports=orderroutes

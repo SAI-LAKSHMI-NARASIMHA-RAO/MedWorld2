@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const cartModel=require("./cart.model")
-const orderModel=require("./order.model")
+const {cartModel}=require("./cart.model")
+const {orderSchema}=require("./order.model")
 const userSchema = mongoose.Schema({
     email:{
         type:String,
@@ -25,18 +25,20 @@ const userSchema = mongoose.Schema({
     },
     active:{
         type:Boolean,
-        // required:true
+        default:true,
+        required:true
     },
     
     cart:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'cart'
-        // required:true
+        ref:'cart',
+        auto:true
     },
     ordersList:{
-        type:[orderModel.Schema],
+        type:[orderSchema],
         default:[],
+        required:true
     }
 });
 const userModel = mongoose.model("user", userSchema);
-module.exports = userModel;
+module.exports = {userModel,userSchema};

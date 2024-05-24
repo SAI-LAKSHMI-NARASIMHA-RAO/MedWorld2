@@ -1,15 +1,16 @@
 const express=require('express')
 const adminroutes=express.Router()
 const controller=require('../controllers/product.controller')
+const { authenticateAdmin } = require('../middlewares/admin.middleware')
 
-adminroutes.get('/',controller.getProduct)
+adminroutes.get('/',authenticateAdmin,controller.getProduct)
 
-adminroutes.post('/addProduct',controller.productSave)
+adminroutes.post('/addProduct',authenticateAdmin,controller.productSave)
 
-adminroutes.get('/delete/:id',controller.productDelete)
+adminroutes.get('/delete/:id',authenticateAdmin,controller.productDelete)
 
-adminroutes.get('/product/:id',controller.getProductData)
+adminroutes.get('/product/:id',authenticateAdmin,controller.getProductData)
 
-adminroutes.post('/productEdit/:id',controller.productEditSave)
+adminroutes.post('/productEdit/:id',authenticateAdmin,controller.productEditSave)
 
 module.exports=adminroutes

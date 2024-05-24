@@ -1,7 +1,7 @@
-const cartModel = require('../models/cart.model');
-const orderModel=require('../models/order.model')
-const productModel=require('../models/product.model');
-const userModel = require('../models/user.model');
+const {cartModel} = require('../models/cart.model');
+const {orderModel}=require('../models/order.model')
+const {productModel}=require('../models/product.model');
+const {userModel} = require('../models/user.model');
 exports.getUserProducts=async (req,res)=>{
     const id=req.body.userId;
     try{
@@ -17,11 +17,8 @@ exports.saveProduct=async (req,res)=>{
     const userId = req.body.userId;
     try {
         const cartItems =await cartModel.find({userId:{$eq:userId} });
-        // console.log(cartItems);
         if(cartItems==[]) res.json({message:"Cart Items Not Found"})
         else{
-            // const userToAdd=userModel.findOne({userId:{$eq:userId}})
-            // if(!userToAdd.ordersList)userToAdd.ordersList=new Array({})
             cartItems.forEach(element => {
                 const {productName,quantity,price}=element;
                 const order=new orderModel({
@@ -33,12 +30,10 @@ exports.saveProduct=async (req,res)=>{
                     price:price,
                 })
                 order.save()
-                // console.log(userToAdd.ordersList);
                 userModel.findOneAndUpdate(
-                    { userId: userId }, 
-                    { $push: {ordersList: order} },
-                    {new :true});
-                // userModel.findOneAndUpdate({userId:userId},userToAdd);                
+                    { _id: userId },
+                    { $push: { ordersList: order } }
+                ).exec();              
             });
             
             res.status(200).json({message:"Added to Order.."});      
@@ -65,8 +60,12 @@ exports.placeOrder=async (req,res)=>{
             totalPrice:(Number(quantity)*Number(price)).toString(),
             status:"Placed Order",
         })
-        const userToAdd=await userModel.findOne({userId:{$eq:userId}})
-        userToAdd.orderList.push(order);
+        await order.save()
+        // const userToAdd=await userModel.findOne({userId:{$eq:userId}})
+        await userModel.findOneAndUpdate(
+            { userId: userId },
+            { $push: { ordersList: order } }
+        );
         res.status(200).json(order);
     }
     catch(err){res.status(404).json({message:"Error in adding order!!!"})}

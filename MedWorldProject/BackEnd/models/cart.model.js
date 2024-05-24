@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const userModel=require("./user.model")
+const {userModel}=require("./user.model")
 
 const cartSchema = mongoose.Schema({
     cartItemID:{
@@ -23,6 +23,10 @@ const cartSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    prescription:{
+        type:Boolean,
+        required:true
+    }
 });
 const cartModel = mongoose.model("cart", cartSchema);
-module.exports = cartModel;
+module.exports = {cartModel,cartSchema};

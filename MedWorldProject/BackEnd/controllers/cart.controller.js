@@ -1,5 +1,5 @@
-const cartModel = require('../models/cart.model');
-const productModel = require('../models/product.model');
+const {cartModel} = require('../models/cart.model');
+const {productModel} = require('../models/product.model');
 
 exports.addToCart = async (req, res) => {
     const productId = req.params.id; 
@@ -15,7 +15,8 @@ exports.addToCart = async (req, res) => {
             userId: userId,
             productName: product.productName,
             quantity: req.body.quantity,
-            price: (Number(req.body.quantity) * Number(pricePerItem)).toString()
+            price: (Number(req.body.quantity) * Number(pricePerItem)).toString(),
+            prescription: product.prescriptionRequired
         });
 
         return res.status(201).json({ message: "Item added to cart successfully", cartItem });

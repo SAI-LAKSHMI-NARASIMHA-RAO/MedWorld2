@@ -1,9 +1,10 @@
 const express=require('express')
 const cartroutes=express.Router()
 const controller=require('../controllers/cart.controller')
+const { authenticateUser } = require('../middlewares/user.middleware')
 
-cartroutes.get('/:id',controller.showCart)
+cartroutes.get('/:id',authenticateUser,controller.showCart)
 
-cartroutes.post('/delete/:id',controller.deleteCartItem)
+cartroutes.post('/delete/:id',authenticateUser,controller.deleteCartItem)
 
 module.exports=cartroutes
