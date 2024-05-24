@@ -49,11 +49,11 @@ export const Signup = () => {
             <input type='text' placeholder='Mobile Number' name='mobileNumber' />
           </div>
           <div className="btn-group">
-            <label for='btn1'>
+            <label htmlFor='btn1'>
               <input type="radio" id='btn1' name="role" value="user" />
               User
             </label>
-            <label for='btn2'>
+            <label htmlFor='btn2'>
               <input type="radio" id='btn2' name="role" value="admin" />
               Admin
             </label>
