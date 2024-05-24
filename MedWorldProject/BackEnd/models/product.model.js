@@ -21,11 +21,17 @@ const productSchema = mongoose.Schema({
         required:true
     },
     quantity:{
-        type:String,
+        type:Number,
+        default:0,
         required:true
     },
     prescriptionRequired:{
         type:Boolean,
+        required:true
+    },
+    checkAvailable:{
+        type:String,
+        default:"Availble",
         required:true
     }
 });

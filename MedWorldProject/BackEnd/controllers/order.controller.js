@@ -61,7 +61,6 @@ exports.placeOrder=async (req,res)=>{
             status:"Placed Order",
         })
         await order.save()
-        // const userToAdd=await userModel.findOne({userId:{$eq:userId}})
         await userModel.findOneAndUpdate(
             { userId: userId },
             { $push: { ordersList: order } }

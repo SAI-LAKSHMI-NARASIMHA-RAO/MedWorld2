@@ -50,7 +50,7 @@ exports.productSave=async (req,res)=>{
             productName:req.body.productName,
             price:req.body.price,
             description:req.body.description,
-            quantity:req.body.quantity,
+            quantity:prod.quantity+req.body.quantity,
             prescriptionRequired:req.body.prescriptionRequired
         });
         res.status(200).json(prod)

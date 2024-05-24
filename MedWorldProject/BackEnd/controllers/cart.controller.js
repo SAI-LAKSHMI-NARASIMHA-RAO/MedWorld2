@@ -14,8 +14,8 @@ exports.addToCart = async (req, res) => {
             cartItemID: productId,
             userId: userId,
             productName: product.productName,
-            quantity: req.body.quantity,
-            price: (Number(req.body.quantity) * Number(pricePerItem)).toString(),
+            quantity:(product.quantity)+ (req.body.quantity),
+            price: (Number(product.quantity) * Number(pricePerItem)).toString(),
             prescription: product.prescriptionRequired
         });
 

@@ -2,7 +2,7 @@ require('dotenv').config()
 const jwt=require('jsonwebtoken')
 
 exports.authenticateAdmin=async (req,res,next)=>{
-    const token=req.headers.authentication.split(' ')[1];
+    const token=req.header('authorization').split(' ')[1];
     if(!token){
         res.status(401).json({access:false,mesage:"Unauthorized admin"})
     }
