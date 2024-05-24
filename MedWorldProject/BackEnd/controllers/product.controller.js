@@ -44,6 +44,7 @@ exports.productEditSave=async (req,res)=>{
 
 exports.productSave=async (req,res)=>{
     try{
+        const id=req.body.productId
         const prod=await productModel.create({
             productId:req.body.productId,
             imageUrl:req.body.imageUrl,

@@ -1,6 +1,6 @@
 require('dotenv').config()
 const jwt=require('jsonwebtoken')
-
+const {userModel}=require('../models/user.model')
 exports.authenticateAdmin=async (req,res,next)=>{
     const token=req.header('authorization').split(' ')[1];
     if(!token){
