@@ -7,7 +7,8 @@ import Footer from './Components/footerfiles/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Home from './Components/Home';
 import Cart from './Components/Cart';
-import Order from './Components/Order';
+//import Order from './Components/Order';
+import About from './Components/About'
 import AdminDashboard from './Components/AdminDashboard';
 import AddProduct from './Components/AddProduct';
 
@@ -21,7 +22,7 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/home" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/orders" element={<Order />} />
+          <Route path="/about" element={<About />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/addProduct" element={<AddProduct />} />
           <Route path="*" element={<Navigate to="/login" replace />} />

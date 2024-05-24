@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom'
 import './Header.css'
+import { Navbar, Nav } from 'react-bootstrap';
 export const Header = () => {
   return (
     <>
@@ -11,11 +12,23 @@ export const Header = () => {
           <h1 className="ms-2 display-6">Med World</h1>
         </a>
 
-        <ul className="nav nav-pills">
+       {/* ul className="nav nav-pills">
           <li className="nav-item"><Link to="/home" className="nav-link active" aria-current="page">Home</Link></li>
           <li className="nav-item"><Link to="/cart" className="nav-link">Cart</Link></li>
           <li className="nav-item"><a href="#" className="nav-link">Dashboard</a></li>
-        </ul>
+        </ul> */}
+        <Navbar bg="dark" variant="dark" expand="lg">
+      <Navbar.Brand href="/home">MedWorld</Navbar.Brand>
+      <Navbar.Toggle aria-controls="basic-navbar-nav" />
+      <Navbar.Collapse id="basic-navbar-nav">
+        <Nav className="ml-auto">
+          <Nav.Link as={Link} to="/home">Home</Nav.Link>
+          <Nav.Link as={Link} to="/cart">Cart</Nav.Link>
+          <Nav.Link as={Link} to="/about">About</Nav.Link>
+          <Nav.Link as={Link} to="/login">Logout</Nav.Link>
+        </Nav>
+      </Navbar.Collapse>
+    </Navbar>
       </header>
     </div>
     </>

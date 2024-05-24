@@ -1,0 +1,12 @@
+/* Add this to your CSS file, e.g., App.css */
+.custom-carousel {
+    max-width: 80%; /* Adjust the width as needed */
+    height: 400px; /* Adjust the height as needed */
+    margin: auto; /* Center the carousel horizontally */
+  }
+  
+  .custom-carousel img {
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the container without stretching */
+  }
+  
