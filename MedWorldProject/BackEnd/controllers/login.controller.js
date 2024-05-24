@@ -1,6 +1,7 @@
 const {loginModel}=require('../models/login.model')
 const bcrypt=require('bcrypt')
 const jwt=require('jsonwebtoken');
+const { userModel } = require('../models/user.model');
 // const { userModel } = require('../models/user.model');
 exports.checkUser =async (req,res)=>{
     const {email,password}=req.body;
@@ -13,7 +14,9 @@ exports.checkUser =async (req,res)=>{
                 if(!originalPass) res.json({message:"Login Unsuccessful"})
                 else {
                     // console.log(login._id.toString())
-                    const token=await jwt.sign(login._id.toString(),process.env.secretkey)
+                    const user=await userModel.findOne({email:email})
+                    console.log(user)
+                    const token=await jwt.sign(user._id.toString(),process.env.secretkey)
                     res.status(200).json({message:"Login Successfull",token:token})
                 }
         }

@@ -1,10 +1,11 @@
 const {cartModel} = require('../models/cart.model');
 const {productModel} = require('../models/product.model');
-
+const {userModel}=require('../models/user.model')
 exports.addToCart = async (req, res) => {
     const productId = req.params.id; 
-    const userId = req.body.userId; 
-
+    const token=req.header('authorization').split(' ')[1];
+    const user=await userModel.findOne({_id:{$eq:data._id}})
+    const userId = user._id.toString(); 
     try {
         const product = await productModel.findOne({ productId:{$eq:productId} });
         if (!product) 
