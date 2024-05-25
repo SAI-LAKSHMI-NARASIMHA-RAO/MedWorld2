@@ -5,30 +5,43 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-const Products =()=> {
+const Products = () => {
   const [prods, setProds] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // Add error state
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/products');
+        const response = await axios.get('http://localhost:5632/home');
         setProds(response.data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching product data:', error);
+        setError(error); // Set error state if fetch fails
+        setLoading(false); // Set loading to false even on error
       }
     };
 
     fetchProducts();
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>; // Render error message if fetch fails
+  }
+
   const productCards = prods.map((product, index) => (
     <Col key={index} md={4}>
       <Card style={{ marginBottom: '20px' }}>
         <Card.Img variant="top" src={product.imageUrl} />
         <Card.Body>
-          <Card.Title>{product.name}</Card.Title>
+          <Card.Title>{product.productName}</Card.Title> {/* Change product.name to product.productName */}
           <Card.Text>
-            {product.quantity>0}?Available:Out of Stock
+            {product.quantity > 0 ? 'Available' : 'Out of Stock'}
           </Card.Text>
         </Card.Body>
         <ListGroup className="list-group-flush">
@@ -48,11 +61,7 @@ const Products =()=> {
     rows.push(row);
   }
 
-  return (
-    <div>
-      {rows}
-    </div>
-  );
-}
+  return <div>{rows}</div>;
+};
 
-export {Products};
+export { Products };

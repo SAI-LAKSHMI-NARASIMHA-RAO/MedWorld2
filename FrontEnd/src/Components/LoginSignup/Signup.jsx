@@ -9,11 +9,27 @@ import email_icon from '../Assets/email.png';
 
 export const Signup = () => {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    username: '',
+    mobileNumber: '',
+    role: 'user'  // default role
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const signupHandler = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5632/signup'); 
+      const response = await axios.post('http://localhost:5632/signup', formData);
+      console.log(response.data); 
       if (response.data.success === "true") {
         navigate('/home');
       } else {
@@ -31,40 +47,60 @@ export const Signup = () => {
           <div className='text'>Sign Up</div>
           <div className='underline'></div>
         </div>
-        <div className='inputs'>
-          <div className='input'>
-            <img src={email_icon} alt="Email Icon" />
-            <input type='email' placeholder='Email Id' name='email' />
+        <form onSubmit={signupHandler}>
+          <div className='inputs'>
+            <div className='input'>
+              <img src={email_icon} alt="Email Icon" />
+              <input 
+                type='email' 
+                placeholder='Email Id' 
+                name='email' 
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className='input'>
+              <img src={password_icon} alt="Password Icon" />
+              <input 
+                type='password' 
+                placeholder='Password' 
+                name='password' 
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className='input'>
+              <img src={user_icon} alt="User Icon" />
+              <input 
+                type='text' 
+                placeholder='User Name' 
+                name='username' 
+                value={formData.username}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className='input'>
+              <img src={user_icon} alt="Mobile Number Icon" />
+              <input 
+                type='text' 
+                placeholder='Mobile Number' 
+                name='mobileNumber' 
+                value={formData.mobileNumber}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
-          <div className='input'>
-            <img src={password_icon} alt="Password Icon" />
-            <input type='password' placeholder='Password' name='password' />
+          <div className="forgot-password">
+            Already a user? <Link to='/login' className='clickhere'>Click Here to Login</Link>
           </div>
-          <div className='input'>
-            <img src={user_icon} alt="User Icon" />
-            <input type='text' placeholder='User Name' name='username' />
+          <div className="submit-container">
+            <button type='submit' className='submit'>Sign Up</button>
           </div>
-          <div className='input'>
-            <img src={user_icon} alt="Mobile Number Icon" />
-            <input type='text' placeholder='Mobile Number' name='mobileNumber' />
-          </div>
-          <div className="btn-group">
-            <label htmlFor='btn1'>
-              <input type="radio" id='btn1' name="role" value="user" />
-              User
-            </label>
-            <label htmlFor='btn2'>
-              <input type="radio" id='btn2' name="role" value="admin" />
-              Admin
-            </label>
-          </div>
-        </div>
-        <div className="forgot-password">
-          Already a user? <Link to='/login' className='clickhere'>Click Here to Login</Link>
-        </div>
-        <div className="submit-container">
-          <div className='submit' onClick={signupHandler}>Sign Up</div>
-        </div>
+        </form>
       </div>
     </>
   );
