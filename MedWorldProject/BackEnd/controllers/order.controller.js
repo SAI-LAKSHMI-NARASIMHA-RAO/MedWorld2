@@ -4,11 +4,13 @@ const {productModel}=require('../models/product.model');
 const {userModel} = require('../models/user.model');
 exports.getUserProducts=async (req,res)=>{
     const id=req.body.userId;
+    console.log("Hello")
     try{
-        const order=await orderModel.find({userId:{$eq:id}});
+        const order=await orderModel.findOne({userId:{$eq:id}});
         if(!order) res.json({"message":"Order not found"})
         else res.status(200).json(order)
-    }catch(err){
+    }
+    catch(err){
         res.json({"message":"Error in loading the order details!!"})
     }
 }
@@ -16,27 +18,31 @@ exports.getUserProducts=async (req,res)=>{
 exports.saveProduct=async (req,res)=>{
     const userId = req.body.userId;
     try {
-        const cartItems =await cartModel.find({userId:{$eq:userId} });
-        if(cartItems==[]) res.json({message:"Cart Items Not Found"})
+        const cartItem=await cartModel.findOne({userId:{$eq:userId} });
+        if(!cartItem) res.json({message:"Cart Items Not Found"})
         else{
-            cartItems.forEach(element => {
+            const order=new orderModel({
+                userId:userId,
+                status:"Order Placed",
+            })
+            let total=0;
+            cartItem.items.forEach(element => {
                 const {productName,quantity,price}=element;
-                const order=new orderModel({
-                    userId:userId,
+                total+=price;
+                order.items.push({
                     productName:productName,
                     quantity:quantity,
                     totalPrice:(Number(quantity)*(Number(price))).toString(),
-                    status:"Order Placed",
                     price:price,
                 })
-                order.save()
-                userModel.findOneAndUpdate(
-                    { _id: userId },
-                    { $push: { ordersList: order } }
-                ).exec();              
             });
-            
-            res.status(200).json({message:"Added to Order.."});      
+            order.totalPrice=total;
+            await order.save()
+            await userModel.findOneAndUpdate(
+                { _id: userId },
+                { $push: { ordersList: order } }
+            ).exec();              
+            return res.status(200).json({message:"Added to Order.."});      
         }
     }
     catch (error) {
@@ -54,15 +60,16 @@ exports.placeOrder=async (req,res)=>{
         console.log(sprod.productName)
         const order=await orderModel.create({
             userId:userId,
-            productName:productName,
-            quantity:quantity,
-            price:price,
-            totalPrice:(Number(quantity)*Number(price)).toString(),
-            status:"Placed Order",
+            status:"Placed Order"
         })
+        order.items.push({
+            productName:productName,
+            quantity:1,
+            price:price,
+        })
+        order.totalPrice=(Number(quantity)*Number(price)).toString(),
         await order.save()
         await userModel.findOneAndUpdate(
-            { userId: userId },
             { $push: { ordersList: order } }
         );
         res.status(200).json(order);
