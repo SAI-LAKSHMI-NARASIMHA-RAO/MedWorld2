@@ -4,7 +4,7 @@ const bcrypt =require('bcrypt')
 const jwt=require('jsonwebtoken')
 exports.saveUser=async (req, res)=>{
     try {
-        const { email, password,username, mobileNumber,role } = req.body;
+        const { email, password,username, mobileNumber } = req.body;
         const find=await userModel.findOne({email:{$eq:email}})
         if(find){
             
@@ -17,7 +17,6 @@ exports.saveUser=async (req, res)=>{
             password:hashedPass,
             username: username,
             mobileNumber: mobileNumber,
-            role:role,
             ordersList:[]
             
         });

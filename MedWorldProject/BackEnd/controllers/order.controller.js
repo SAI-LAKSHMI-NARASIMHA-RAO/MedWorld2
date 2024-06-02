@@ -19,29 +19,39 @@ exports.saveProduct=async (req,res)=>{
     const userId = req.body.userId;
     try {
         const cartItem=await cartModel.findOne({userId:{$eq:userId} });
-        if(!cartItem) res.json({message:"Cart Items Not Found"})
+        if(!cartItem) return res.json({message:"Cart Items Not Found"})
         else{
             const order=new orderModel({
                 userId:userId,
                 status:"Order Placed",
             })
             let total=0;
-            cartItem.items.forEach(element => {
+            cartItem.items.forEach((element) => {
                 const {productName,quantity,price}=element;
                 total+=price;
                 order.items.push({
                     productName:productName,
                     quantity:quantity,
-                    totalPrice:(Number(quantity)*(Number(price))).toString(),
+                    totalPrice:(Number(quantity)*(Number(price))),
                     price:price,
                 })
             });
             order.totalPrice=total;
             await order.save()
+            cartItem.items.forEach((element) => {
+                const {productName,quantity}=element;
+                productModel.findOneAndUpdate(
+                    {productName:productName},
+                    {$inc:{quantity:-quantity}}
+                ).exec()
+            })
+
             await userModel.findOneAndUpdate(
                 { _id: userId },
                 { $push: { ordersList: order } }
-            ).exec();              
+            ).exec();      
+            
+            await cartModel.findOneAndDelete({userId:userId});        
             return res.status(200).json({message:"Added to Order.."});      
         }
     }
@@ -67,7 +77,7 @@ exports.placeOrder=async (req,res)=>{
             quantity:1,
             price:price,
         })
-        order.totalPrice=(Number(quantity)*Number(price)).toString(),
+        order.totalPrice=(Number(quantity)*Number(price)),
         await order.save()
         await userModel.findOneAndUpdate(
             { $push: { ordersList: order } }

@@ -20,16 +20,16 @@ exports.addToCart = async (req, res) => {
             const idx=cartFind.items.findIndex((c)=>c.cartItemID===productId)
             if(idx!==-1){
                 cartFind.items[idx].quantity+=req.body.quantity;
+                console.log(cartFind.items[idx].quantity);
             }
             else{
                 cartFind.items.push({
-                cartItemID: productId,
-                productName: product.productName,
-                quantity:(req.body.quantity),
-                        price: (Number(product.quantity) * Number(pricePerItem)).toString(),
-                        prescription: product.prescriptionRequired
-                    })
-                    
+                    cartItemID: productId,
+                    productName: product.productName,
+                    quantity:Number(req.body.quantity),
+                    price: (Number(req.body.quantity)*(pricePerItem)),
+                    prescription: product.prescriptionRequired
+                })    
             }
             await cartFind.save()
             return res.status(201).json({message:"Updated cart"})
@@ -42,7 +42,7 @@ exports.addToCart = async (req, res) => {
                 cartItemID: productId,
                 productName: product.productName,
                 quantity:(req.body.quantity),
-                price: (Number(product.quantity) * Number(pricePerItem)).toString(),
+                price: (Number(req.body.quantity) * Number(pricePerItem)),
                 prescription: product.prescriptionRequired
             })
             await cartItem.save()
@@ -90,5 +90,57 @@ exports.deleteCartItem = async (req, res) => {
     catch (error) {
         console.error("Error deleting cart item:", error);
         res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+exports.incrementItem=async (req,res)=>{
+    const userId=req.body.userId
+    const pid=req.params.productId
+    try{
+        const cart=await cartModel.findOne({userId:userId}); 
+        const prod=await cart.items.findIndex((p)=>p.cartItemID===pid)
+        if(prod==-1){
+            return res.status(404).json({message:"Product Not Found in Cart"})
+        }
+
+        const prodDet=await productModel.findOne({productId:pid})
+        const perProdPrice=prodDet.price;
+        
+        cart.items[prod].quantity+=1;
+        if(cart.items[prod].quantity>prodDet.quantity){
+            return res.json({message:"Cannot add product,Out Of Stock"})
+        }
+        
+        cart.items[prod].price=(cart.items[prod].quantity)*perProdPrice;
+        await cart.save();
+        return res.json({messsage:"quantity increased"})
+    }
+    catch(err){
+        res.json({message:"Error in adding new Product"})
+    }
+}
+
+exports.decrementItem=async (req,res)=>{
+    const userId=req.body.userId
+    const pid=req.params.productId
+    try{
+        const cart=await cartModel.findOne({userId:userId});
+        const prod=await cart.items.findIndex((p)=>p.cartItemID===pid)
+        if(prod==-1){
+            return res.status(404).json({message:"Product Not Found in Cart"})
+        }
+        const perProdPrice=(cart.items[prod].price)/(cart.items[prod].quantity);
+        cart.items[prod].quantity-=1;
+        if(cart.items[prod].quantity===0){
+            cart.items.splice(prod,1);
+            await cart.save();
+            return res.json({message:"Product is removed from cart"})
+        }
+        cart.items[prod].price=(cart.items[prod].quantity)*perProdPrice;
+        await cart.save();
+        return res.json({messsage:"quantity decreased"})
+    }
+    catch(err){
+        res.json({message:"Error in removing new Product"})
     }
 }

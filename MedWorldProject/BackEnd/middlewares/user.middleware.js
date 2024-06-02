@@ -3,8 +3,7 @@ const jwt=require('jsonwebtoken')
 
 exports.authenticateUser=(req,res,next)=>{
     try{
-        // console.log(req)
-        const token=req.header('authorization').split(' ')[1]
+        const token=req.header('Authorization').split(' ')[1]
         if(!token){
             res.status(498).json({access:false,mesage:"Invalid token"})
         }

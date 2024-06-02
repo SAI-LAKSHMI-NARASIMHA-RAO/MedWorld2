@@ -20,7 +20,7 @@ const orderSchema = mongoose.Schema({
                 default:1
             },
             price:{
-                type:String,
+                type:Number,
                 required:true
             }
         }],
